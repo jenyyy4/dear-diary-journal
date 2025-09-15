@@ -34,6 +34,7 @@ function requireLogin(req, res, next) {
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(morgan('dev'));
 
 app.set('view engine', 'ejs');

@@ -5,7 +5,7 @@
   <%- include("./partials/nav.ejs") %>
   <div class="background"></div>
 
-  <div class="details content">
+  <!-- <div class="details content">
     <h2 class="blog-title"><%= blog.title %></h2>
     <div class="blog-body content">
       <p class="blog-body"><%= blog.body %></p>
@@ -13,11 +13,34 @@
     <a class="delete" data-doc="<%= blog._id %>">
         <img src="/trashcan.svg" alt="delete icon"/>
     </a>
+  </div> -->
+
+  <div class="details content">
+    <h2 class="blog-title"><%= blog.title %></h2>
+    <div class="blog-body content">
+      <p class="blog-body" id="blog-content"><%= blog.body %></p>
+    </div>
+
+    <div class="actions">
+      <a class="edit" data-doc="<%= blog._id %>">
+        <img src="/pencil.svg" class="pencil-icon" alt="edit icon"/>
+      </a>
+
+      <a class="delete" data-doc="<%= blog._id %>">
+        <img src="/trashcan.svg" alt="delete icon"/>
+      </a>
+    </div>
+
+    <div id="edit-form" style="display:none; margin-top:1rem;">
+      <textarea id="edit-text" rows="5" style="width:100%;"><%= blog.body %></textarea>
+      <button id="save-edit">Save</button>
+      <button id="cancel-edit">Cancel</button>
+    </div>
   </div>
 
   <%- include("./partials/footer.ejs") %>
 
-  <script>
+  <!-- <script>
     const trashcan = document.querySelector('a.delete');
 
     trashcan.addEventListener('click', (e) => {
@@ -31,6 +54,49 @@
       .catch(err => console.log(err));
     });
     
+  </script> -->
+  <script>
+    const trashcan = document.querySelector('a.delete');
+    const editBtn = document.querySelector('a.edit');
+    const blogContent = document.querySelector('#blog-content');
+    const editForm = document.querySelector('#edit-form');
+    const editText = document.querySelector('#edit-text');
+    const saveBtn = document.querySelector('#save-edit');
+    const cancelBtn = document.querySelector('#cancel-edit');
+
+    trashcan.addEventListener('click', () => {
+      const endpoint = `/blogs/${trashcan.dataset.doc}`;
+      fetch(endpoint, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(data => window.location.href = data.redirect)
+        .catch(err => console.log(err));
+    });
+
+    editBtn.addEventListener('click', () => {
+      editForm.style.display = "block";
+      blogContent.style.display = "none";
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      editForm.style.display = "none";
+      blogContent.style.display = "block";
+    });
+
+    saveBtn.addEventListener('click', () => {
+      const endpoint = `/blogs/${editBtn.dataset.doc}`;
+      fetch(endpoint, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: editText.value })
+      })
+      .then(response => response.json())
+      .then(data => {
+        blogContent.textContent = editText.value;
+        editForm.style.display = "none";
+        blogContent.style.display = "block";
+      })
+      .catch(err => console.log(err));
+    });
   </script>
 </body>
 </html>

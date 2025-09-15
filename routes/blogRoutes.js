@@ -46,6 +46,22 @@ router.get('/blogs/:id', requireLogin, async (req, res) => {
   }
 });
 
+router.patch('/blogs/:id', requireLogin, async (req, res) => {
+  try {
+    const { title, body } = req.body;
+    const blog = await Blog.findOneAndUpdate(
+      { _id: req.params.id, user: req.session.userId },
+      { title, body },
+      { new: true }
+    );
+    if (!blog) return res.status(404).json({ error: "Blog not found" });
+    res.json({ blog });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error updating blog" });
+  }
+});
+
 router.delete('/blogs/:id', requireLogin, async (req, res) => {
   try {
     const result = await Blog.findOneAndDelete({ _id: req.params.id, user: req.session.userId });
