@@ -3,7 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const blogRoutes = require('./routes/blogRoutes');
-const User = require('./models/User');
+const User = require('./models/user');
 const Blog = require('./models/blog');
 const blogController = require('./controller/blogController');
 
