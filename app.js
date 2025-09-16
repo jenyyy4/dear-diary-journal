@@ -10,10 +10,13 @@ const blogController = require('./controller/blogController');
 const app = express();
 
 const dbURI = process.env.DBURI;
+const PORT = process.env.PORT || 3000; 
 mongoose.connect(dbURI)
 .then((result) => {
     console.log("connected to db");
-    app.listen(3000);
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
 })
 .catch((err) => console.log(err));
 
